@@ -1,7 +1,7 @@
 import {CategoryItem} from '../category-item/category-item.component';
 import './directory.styles.scss';
 
-export const Directory = ({categories}) => (
+export const Directory = ({categories}) =>
     <div className='directory-container'>
         {categories.map((category) => (
             <CategoryItem
@@ -9,5 +9,4 @@ export const Directory = ({categories}) => (
                 key={category.id}
             />
         ))}
-    </div>
-);
+    </div>;
