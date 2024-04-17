@@ -3,9 +3,11 @@ import {initializeApp} from 'firebase/app';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import {
+    createUserWithEmailAndPassword,
     getAuth,
     // signInWithRedirect,
     signInWithPopup,
+    signInWithEmailAndPassword,
     GoogleAuthProvider
 } from 'firebase/auth';
 import {
@@ -37,17 +39,18 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
    prompt: 'select_account'
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+// export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
 export const db = getFirestore();
-export const createUserDocumentFromAuth = async (userAuth) => {
+export const createUserDocumentFromAuth = async (userAuth, additionalInfo = {}) => {
     const userDocRef = doc(db, 'users', userAuth.uid);
     const userSnapshot = await getDoc(userDocRef);
 
@@ -61,7 +64,8 @@ export const createUserDocumentFromAuth = async (userAuth) => {
             await setDoc(userDocRef, {
                 createdAt,
                 displayName,
-                email
+                email,
+                ...additionalInfo // In case user does not use any provider like Google, Facebook etc. (no display name in that case)
             });
         } catch (error) {
             throw new Error(error);
@@ -69,4 +73,12 @@ export const createUserDocumentFromAuth = async (userAuth) => {
     }
 
     return userDocRef;
+};
+
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
+    return await createUserWithEmailAndPassword(auth, email, password);
+};
+
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+    return await signInWithEmailAndPassword(auth, email, password);
 };
