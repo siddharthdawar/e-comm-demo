@@ -1,8 +1,11 @@
 import {
+    Button,
+    BUTTON_TYPE_CLASSES
+} from '../button/button.component';
+import {
     signInAuthUserWithEmailAndPassword,
     signInWithGooglePopup
 } from '../../utils/firebase/firebase.utils';
-import {Button} from '../button/button.component';
 import {FormInput} from '../form-input/form-input.component';
 import {useState} from 'react';
 import './sign-in-form.styles.scss';
@@ -74,7 +77,7 @@ export const SignInForm = () => {
                 <div className='buttons-container'>
                     <Button>Sign In</Button>
                     <Button
-                        buttonType='google'
+                        buttonType={BUTTON_TYPE_CLASSES.google}
                         onClick={onSignInWithGooglePopup}
                         type='button' // buttons are of submit type by default. This prevents form from being submitted in this case
                     >

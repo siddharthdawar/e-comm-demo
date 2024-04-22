@@ -13,10 +13,14 @@ import {
     signOut
 } from 'firebase/auth';
 import {
-    getFirestore,
+    collection,
     doc,
     getDoc,
-    setDoc
+    getDocs,
+    getFirestore,
+    query,
+    setDoc,
+    writeBatch
 } from 'firebase/firestore';
 
 // Firestore hierarchy
@@ -52,6 +56,40 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 // export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 
 export const db = getFirestore();
+
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+    const collectionRef = collection(db, collectionKey);
+    const batch = writeBatch(db);
+
+    objectsToAdd.forEach(object => {
+        const docRef = doc(collectionRef, object.title.toLowerCase());
+
+        batch.set(docRef, object);
+    });
+
+    try {
+        await batch.commit();
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export const getCategoriesAndDocuments = async () => {
+    const collectionRef = collection(db, 'categories');
+    const q = query(collectionRef);
+
+    const querySnapshot = await getDocs(q);
+    const categoryMap = querySnapshot.docs.reduce((acc, doc) => {
+        const {items, title} = doc.data();
+
+        acc[title.toLowerCase()] = items;
+
+        return acc;
+    }, {});
+
+    return categoryMap;
+};
+
 export const createUserDocumentFromAuth = async (userAuth, additionalInfo = {}) => {
     const userDocRef = doc(db, 'users', userAuth.uid);
     const userSnapshot = await getDoc(userDocRef);
