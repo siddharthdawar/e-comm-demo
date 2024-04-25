@@ -48,7 +48,7 @@ initializeApp(firebaseConfig);
 const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
-   prompt: 'select_account'
+    prompt: 'select_account'
 });
 
 export const auth = getAuth();
@@ -79,13 +79,10 @@ export const getCategoriesAndDocuments = async () => {
     const q = query(collectionRef);
 
     const querySnapshot = await getDocs(q);
-    const categoryMap = querySnapshot.docs.reduce((acc, doc) => {
-        const {items, title} = doc.data();
+    const categoryMap = querySnapshot.docs.map(doc =>
+        doc.data()
+    );
 
-        acc[title.toLowerCase()] = items;
-
-        return acc;
-    }, {});
 
     return categoryMap;
 };
@@ -96,7 +93,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInfo = {}) 
 
     // userSnapshot.exists() checks if user (document) already exists in the collection (users)
 
-    if(!userSnapshot.exists()) {
+    if (!userSnapshot.exists()) {
         const {displayName, email} = userAuth;
         const createdAt = new Date();
 

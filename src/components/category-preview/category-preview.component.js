@@ -24,4 +24,4 @@ export const CategoryPreview = ({products, title}) =>
                 }
             </div>
         </h2>
-    </div>
+    </div>;
