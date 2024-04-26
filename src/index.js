@@ -1,15 +1,17 @@
 import {
-    persistor,
+    // persistor,
     store
 } from './store/store';
 import {App} from './App';
 import {BrowserRouter} from 'react-router-dom';
-import {PersistGate} from 'redux-persist/integration/react';
+import {Elements} from '@stripe/react-stripe-js';
+// import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 // import {UserProvider} from './contexts/user.context';
 import reportWebVitals from './reportWebVitals';
+import {stripePromise} from './utils/stripe/stripe.utils';
 import './index.scss';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -18,11 +20,13 @@ root.render(
     <React.StrictMode>
         <Provider store={store}>
             {/*<PersistGate persistor={persistor}>*/}
-                <BrowserRouter>
-                    {/*<UserProvider>*/}
+            <BrowserRouter>
+                {/*<UserProvider>*/}
+                <Elements stripe={stripePromise}> {/* stripe promise tells stripe that it is THIS app that is making request and not a spoof */}
                     <App/>
-                    {/*</UserProvider>*/}
-                </BrowserRouter>
+                </Elements>
+                {/*</UserProvider>*/}
+            </BrowserRouter>
             {/*</PersistGate>*/}
         </Provider>
     </React.StrictMode>
