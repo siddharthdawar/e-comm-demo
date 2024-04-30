@@ -23,8 +23,8 @@ export const Navigation = () => {
     const onSignOutClick = async () => {
         try {
             await signOutUser();
-        } catch (error) {
-            throw new Error(error);
+        } catch (error: unknown) {
+            console.log(error);
         }
     };
 
@@ -42,6 +42,7 @@ export const Navigation = () => {
                         <NavLink
                             as='span'
                             onClick={onSignOutClick}
+                            to='/auth'
                         >
                             SIGN OUT
                         </NavLink> :

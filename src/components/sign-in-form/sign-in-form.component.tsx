@@ -1,4 +1,8 @@
 import {
+    AuthError,
+    AuthErrorCodes
+} from 'firebase/auth';
+import {
     Button,
     BUTTON_TYPE_CLASSES
 } from '../button/button.component';
@@ -7,7 +11,11 @@ import {
     signInWithGooglePopup
 } from '../../utils/firebase/firebase.utils';
 import {FormInput} from '../form-input/form-input.component';
-import {useState} from 'react';
+import {
+    ChangeEvent,
+    FormEvent,
+    useState
+} from 'react';
 import './sign-in-form.styles.scss';
 
 const defaultFormFields = {
@@ -19,7 +27,7 @@ export const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const {email, password} = formFields;
 
-    const onChange = (event) => {
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
 
         setFormFields({
@@ -28,23 +36,23 @@ export const SignInForm = () => {
         });
     };
 
-    const onSubmit = async (event) => {
+    const onSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
         try {
             await signInAuthUserWithEmailAndPassword(email, password);
 
             setFormFields(defaultFormFields);
-        } catch (error) {
-            switch (error.code) {
-                case 'auth/wrong-password':
+        } catch (error: unknown) {
+            switch ((error as AuthError).code) {
+                case AuthErrorCodes.INVALID_PASSWORD:
                     alert('incorrect password for email');
                     break;
-                case 'auth/user-not-found':
+                case AuthErrorCodes.USER_DELETED:
                     alert('no user associated with this email');
                     break;
                 default:
-                    throw new Error(error);
+                    console.log(error);
             }
         }
     };

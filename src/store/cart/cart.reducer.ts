@@ -1,18 +1,23 @@
-import {CART_ACTION_TYPES} from './cart.types';
+import {
+    CART_ACTION_TYPES,
+    CartState
+} from './cart.types';
+import {CartAction} from './cart.action';
 
-const initialState = {
+const initialState: CartState = {
     cartItems: [],
     isCartOpen: false
 };
 
-export const cartReducer = (state = initialState, action) => {
-    const {type, payload} = action;
-
-    switch (type) {
+export const cartReducer = (
+    state = initialState,
+    action = {} as CartAction
+): CartState => {
+    switch (action.type) {
         case CART_ACTION_TYPES.SET_CART_ITEMS:
             return {
                 ...state,
-                cartItems: payload
+                cartItems: action.payload
             }
         case CART_ACTION_TYPES.TOGGLE_CART_IS_OPEN:
             return {

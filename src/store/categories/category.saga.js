@@ -13,7 +13,7 @@ import {getCategoriesAndDocuments} from '../../utils/firebase/firebase.utils';
 
 export function* fetchCategoriesAsync() {
     try {
-        const categories = yield call(getCategoriesAndDocuments, 'categories');
+        const categories = yield call(getCategoriesAndDocuments);
 
         yield put(fetchCategoriesSuccess(categories));
     } catch (error) {

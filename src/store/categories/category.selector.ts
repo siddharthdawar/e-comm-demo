@@ -1,7 +1,10 @@
+import {CategoryMap} from './category.types';
+import {CategoriesState} from './category.reducer';
+import {RootState} from '../store';
 import {createSelector} from 'reselect';
 
 // Slice of the reducer we need to memoize
-const selectCategoryReducer = (state) =>
+const selectCategoryReducer = (state: RootState): CategoriesState =>
     state.categories;
 
 // Create a memoized selector
@@ -12,14 +15,14 @@ const selectCategories = createSelector( // this will rerun only when state.cate
 
 export const selectCategoriesMap = createSelector(
     [selectCategories], // returns categories
-    (categories) => // only run if categories has changed, else return previous value (cached/memoized)
+    (categories): CategoryMap => // only run if categories has changed, else return previous value (cached/memoized)
         categories.reduce((acc, category) => {
             const {items, title} = category;
 
             acc[title.toLowerCase()] = items;
 
             return acc;
-        }, {})
+        }, {} as CategoryMap)
 );
 
 export const selectCategoriesIsLoading = createSelector(

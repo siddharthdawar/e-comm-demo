@@ -1,18 +1,27 @@
 import {
     applyMiddleware,
     compose,
-    legacy_createStore as createStore
+    legacy_createStore as createStore,
+    Middleware
 } from 'redux';
-import {
-    // persistReducer,
+/*import {
+    persistReducer,
     persistStore
-} from 'redux-persist';
+} from 'redux-persist';*/
 // import createSagaMiddleware from 'redux-saga';
-// import {logger} from 'redux-logger/src';
+// import logger from 'redux-logger';
 import {rootReducer} from './root-reducer';
 // import {rootSaga} from './root-saga';
 // import storage from 'redux-persist/lib/storage'; // by default, it is the browser storage
 import {thunk} from 'redux-thunk';
+
+declare global {
+    interface Window {
+        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+    }
+}
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 // Middlewares are like helpers (enhancers)
 // A dispatched "action" first goes through a middleware before hitting a reducer
@@ -23,9 +32,9 @@ import {thunk} from 'redux-thunk';
 // Only run logger in dev mode
 const middlewares = [
     // process.env.NODE_ENV !== 'production' && logger,
-    thunk,
+    thunk
     // sagaMiddleware // can only use either thunk middleware or saga middleware, not both
-].filter(item => item);
+].filter((middleware): middleware is Middleware => Boolean(middleware));
 
 // Will pass middleware for all environments
 // const middlewares = [logger];
@@ -54,4 +63,4 @@ export const store = createStore(
 
 // sagaMiddleware.run(rootSaga);
 
-export const persistor = persistStore(store);
+// export const persistor = persistStore(store);
