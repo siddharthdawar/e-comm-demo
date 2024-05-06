@@ -65,4 +65,9 @@ export const DirectoryItemContainer = styled.div`
     &:last-child {
         margin-left: 7.5px;
     }
+    
+    // apply height of 200 px if the media is a screen and the width is at 800px or below
+    @media screen and (max-width: 800px) {
+        height: 200px;
+    }
 `;

@@ -2,6 +2,7 @@ import {
     // persistor,
     store
 } from './store/store';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import {App} from './App';
 import {BrowserRouter} from 'react-router-dom';
 import {Elements} from '@stripe/react-stripe-js';
@@ -12,7 +13,7 @@ import ReactDOM from 'react-dom/client';
 // import {UserProvider} from './contexts/user.context';
 import reportWebVitals from './reportWebVitals';
 import {stripePromise} from './utils/stripe/stripe.utils';
-import './index.scss';
+// import './index.scss'; Using GlobalStyle instead
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -36,3 +37,5 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+serviceWorkerRegistration.register();

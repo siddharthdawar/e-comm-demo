@@ -8,11 +8,19 @@ import {
     PaymentButton,
     PaymentFormContainer
 } from './payment-form.styles';
+import {
+    FormEvent,
+    useState
+} from 'react';
 import {BUTTON_TYPE_CLASSES} from '../button/button.component';
+import {StripeCardElement} from '@stripe/stripe-js';
 import {selectCartTotal} from '../../store/cart/cart.selector';
 import {selectCurrentUser} from '../../store/user/user.selector';
 import {useSelector} from 'react-redux';
-import {useState} from 'react';
+
+// "card is StripeCardElement" means that if the function returns true, card MUST BE of type StripeCardElement
+const isValidCartElement = (card: StripeCardElement | null): card is StripeCardElement =>
+    card !== null;
 
 export const PaymentForm = () => {
     const amount = useSelector(selectCartTotal);
@@ -24,7 +32,7 @@ export const PaymentForm = () => {
 
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-    const paymentHandler = async (event) => {
+    const paymentHandler = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!stripe || !elements) {
@@ -45,13 +53,18 @@ export const PaymentForm = () => {
         // this client secret is sent by stripe to be included with the actual payment call
         // so that stripe knows that the payment is coming from a genuine source
         const {client_secret} = response.paymentIntent;
+        const card = elements.getElement(CardElement);
+
+        if (!isValidCartElement(card)) {
+            return;
+        }
 
         const paymentResult = await stripe.confirmCardPayment(client_secret, {
             payment_method: {
                 billing_details: {
                     name: currentUser ? currentUser.displayName : 'Guest'
                 },
-                card: elements.getElement(CardElement) // stripe will
+                card
             }
         });
 
